@@ -5,9 +5,7 @@ query Me {
 			field
 		}
 		user {
-			id
-			username
-			createdAt
+			...RegularUser
 		}
 	}
 }
