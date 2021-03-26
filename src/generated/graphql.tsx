@@ -50,6 +50,7 @@ export type User = {
   __typename?: 'User';
   id: Scalars['Int'];
   username: Scalars['String'];
+  email: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -61,7 +62,8 @@ export type Mutation = {
   deletePost: Scalars['String'];
   register: UserResponse;
   login: UserResponse;
-  logout: LogoutResponse;
+  logout: BoolWithMessageResponse;
+  forgotPassword: BoolWithMessageResponse;
 };
 
 
@@ -82,7 +84,7 @@ export type MutationDeletePostArgs = {
 
 
 export type MutationRegisterArgs = {
-  options: UsernamePasswordInput;
+  options: RegisterInput;
 };
 
 
@@ -90,13 +92,24 @@ export type MutationLoginArgs = {
   options: UsernamePasswordInput;
 };
 
+
+export type MutationForgotPasswordArgs = {
+  email: Scalars['String'];
+};
+
+export type RegisterInput = {
+  username: Scalars['String'];
+  password: Scalars['String'];
+  email: Scalars['String'];
+};
+
 export type UsernamePasswordInput = {
   username: Scalars['String'];
   password: Scalars['String'];
 };
 
-export type LogoutResponse = {
-  __typename?: 'LogoutResponse';
+export type BoolWithMessageResponse = {
+  __typename?: 'BoolWithMessageResponse';
   success: Scalars['Boolean'];
   message: Scalars['String'];
 };
@@ -108,7 +121,7 @@ export type RegularPostFragment = (
 
 export type RegularUserFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'username' | 'createdAt'>
+  & Pick<User, 'id' | 'email' | 'username' | 'createdAt'>
 );
 
 export type CreatePostMutationVariables = Exact<{
@@ -132,6 +145,19 @@ export type DeletePostMutationVariables = Exact<{
 export type DeletePostMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'deletePost'>
+);
+
+export type ForgotPasswordMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type ForgotPasswordMutation = (
+  { __typename?: 'Mutation' }
+  & { forgotPassword: (
+    { __typename?: 'BoolWithMessageResponse' }
+    & Pick<BoolWithMessageResponse, 'success' | 'message'>
+  ) }
 );
 
 export type LoginMutationVariables = Exact<{
@@ -160,14 +186,15 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 export type LogoutMutation = (
   { __typename?: 'Mutation' }
   & { logout: (
-    { __typename?: 'LogoutResponse' }
-    & Pick<LogoutResponse, 'success' | 'message'>
+    { __typename?: 'BoolWithMessageResponse' }
+    & Pick<BoolWithMessageResponse, 'success' | 'message'>
   ) }
 );
 
 export type RegisterMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
+  email: Scalars['String'];
 }>;
 
 
@@ -251,6 +278,7 @@ export const RegularPostFragmentDoc = gql`
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
+  email
   username
   createdAt
 }
@@ -276,6 +304,18 @@ export const DeletePostDocument = gql`
 
 export function useDeletePostMutation() {
   return Urql.useMutation<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument);
+};
+export const ForgotPasswordDocument = gql`
+    mutation ForgotPassword($email: String!) {
+  forgotPassword(email: $email) {
+    success
+    message
+  }
+}
+    `;
+
+export function useForgotPasswordMutation() {
+  return Urql.useMutation<ForgotPasswordMutation, ForgotPasswordMutationVariables>(ForgotPasswordDocument);
 };
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
@@ -307,8 +347,8 @@ export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
 };
 export const RegisterDocument = gql`
-    mutation Register($username: String!, $password: String!) {
-  register(options: {username: $username, password: $password}) {
+    mutation Register($username: String!, $password: String!, $email: String!) {
+  register(options: {username: $username, password: $password, email: $email}) {
     errors {
       message
       field
