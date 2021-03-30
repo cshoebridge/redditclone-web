@@ -45,6 +45,13 @@ export const createUrqlClient = (ssrExchange: any) =>
 								{ query: MeDocument },
 								result,
 								(registerQueryResult, cachedMeQuery) => {
+									if (!cachedMeQuery) {
+										return {
+											me: {
+												user: registerQueryResult.register.user
+											}
+										}
+									}
 									if (
 										registerQueryResult.register.errors ||
 										!registerQueryResult.register.user?.id

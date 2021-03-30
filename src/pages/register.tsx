@@ -43,7 +43,6 @@ const Register: React.FC<registerProps> = ({}) => {
 								name="email"
 								placeholder="email"
 								label="Email Address"
-								type="email"
 							/>
 							<InputField
 								name="password"
