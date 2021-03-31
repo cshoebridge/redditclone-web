@@ -64,6 +64,7 @@ export type Mutation = {
   login: UserResponse;
   logout: BoolWithMessageResponse;
   forgotPassword: BoolWithMessageResponse;
+  changePassword: ChangePasswordResponse;
 };
 
 
@@ -97,6 +98,12 @@ export type MutationForgotPasswordArgs = {
   email: Scalars['String'];
 };
 
+
+export type MutationChangePasswordArgs = {
+  newPassword: Scalars['String'];
+  token: Scalars['String'];
+};
+
 export type RegisterInput = {
   username: Scalars['String'];
   password: Scalars['String'];
@@ -114,6 +121,13 @@ export type BoolWithMessageResponse = {
   message: Scalars['String'];
 };
 
+export type ChangePasswordResponse = {
+  __typename?: 'ChangePasswordResponse';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  field?: Maybe<Scalars['String']>;
+};
+
 export type RegularPostFragment = (
   { __typename?: 'Post' }
   & Pick<Post, 'id' | 'title' | 'createdAt' | 'updatedAt'>
@@ -122,6 +136,20 @@ export type RegularPostFragment = (
 export type RegularUserFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'email' | 'username' | 'createdAt'>
+);
+
+export type ChangePasswordMutationVariables = Exact<{
+  token: Scalars['String'];
+  newPassword: Scalars['String'];
+}>;
+
+
+export type ChangePasswordMutation = (
+  { __typename?: 'Mutation' }
+  & { changePassword: (
+    { __typename?: 'ChangePasswordResponse' }
+    & Pick<ChangePasswordResponse, 'field' | 'success' | 'message'>
+  ) }
 );
 
 export type CreatePostMutationVariables = Exact<{
@@ -283,6 +311,19 @@ export const RegularUserFragmentDoc = gql`
   createdAt
 }
     `;
+export const ChangePasswordDocument = gql`
+    mutation changePassword($token: String!, $newPassword: String!) {
+  changePassword(token: $token, newPassword: $newPassword) {
+    field
+    success
+    message
+  }
+}
+    `;
+
+export function useChangePasswordMutation() {
+  return Urql.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument);
+};
 export const CreatePostDocument = gql`
     mutation CreatePost($title: String!) {
   createPost(title: $title) {
