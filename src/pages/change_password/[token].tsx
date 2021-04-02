@@ -3,11 +3,11 @@ import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React from "react";
-import { InputField } from "../../../components/InputField";
-import Wrapper from "../../../components/Wrapper";
-import { useChangePasswordMutation } from "../../../generated/graphql";
-import { createUrqlClient } from "../../../utils/createUrqlClient";
-import { toErrorMap } from "../../../utils/toErrorMap";
+import { InputField } from "../../components/InputField";
+import Wrapper from "../../components/Wrapper";
+import { useChangePasswordMutation } from "../../generated/graphql";
+import { createUrqlClient } from "../../utils/createUrqlClient";
+import { toErrorMap } from "../../utils/toErrorMap";
 
 interface changePasswordProps {}
 
@@ -15,11 +15,7 @@ const ChangePassword: React.FC<changePasswordProps> = ({}) => {
 	const [, changePassword] = useChangePasswordMutation();
 
 	const router = useRouter();
-	const { token } = router.query;
-
-	if (typeof token !== "string") {
-		return <h1>404, page not found</h1>;
-	}
+	const token = router.query.token as string;
 
 	return (
 		<Wrapper>
@@ -57,6 +53,7 @@ const ChangePassword: React.FC<changePasswordProps> = ({}) => {
 								name="password"
 								placeholder="new password"
 								label="New Password"
+								type="password"
 							/>
 						</Box>
 						<Button
