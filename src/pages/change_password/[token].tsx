@@ -4,6 +4,7 @@ import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React from "react";
 import { InputField } from "../../components/InputField";
+import { NavBar } from "../../components/NavBar";
 import Wrapper from "../../components/Wrapper";
 import { useChangePasswordMutation } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
@@ -18,56 +19,71 @@ const ChangePassword: React.FC<changePasswordProps> = ({}) => {
 	const token = router.query.token as string;
 
 	return (
-		<Wrapper>
-			<Formik
-				initialValues={{ password: "" }}
-				onSubmit={async ({ password }, { setErrors }) => {
-					const response = await changePassword({
-						token,
-						newPassword: password,
-					});
-					if (
-						response.data &&
-						!response.data.changePassword.success
-					) {
-						const errors = toErrorMap([
-							{
-								field: response.data.changePassword.field,
-								message: response.data.changePassword.message,
-							},
-						]);
-						console.log(errors)
-						setErrors(errors);
-					} else {
-						alert(
-							"password changed successfully! Redirecting to home page..."
-						);
-						router.push("/");
-					}
-				}}
-			>
-				{({ isSubmitting }) => (
-					<Form>
-						<Box my={4}>
-							<InputField
-								name="password"
-								placeholder="new password"
-								label="New Password"
-								type="password"
-							/>
-						</Box>
-						<Button
-							mt={1}
-							type="submit"
-							isLoading={isSubmitting}
-							colorScheme="teal"
-						>
-							Change Password
-						</Button>
-					</Form>
-				)}
-			</Formik>
-		</Wrapper>
+		<React.Fragment>
+			<NavBar />
+			<Wrapper>
+				<Formik
+					initialValues={{ password: "" }}
+					onSubmit={async ({ password }, { setErrors }) => {
+						const response = (
+							await changePassword({
+								token,
+								newPassword: password,
+							})
+						).data!.changePassword;
+
+						if (!response) {
+							alert(
+								"Unable to change password, redirecting to home page..."
+							);
+						} else if (!response.success) {
+							if (!response.field) {
+								alert(response.message);
+								alert(
+									"Redirecting to 'I forgot my password' page..."
+								);
+								router.push("/forgotpassword");
+							} else {
+								const errors = toErrorMap([
+									{
+										field: response.field,
+										message: response.message,
+									},
+								]);
+								console.log(errors);
+								setErrors(errors);
+							}
+						} else {
+							alert(
+								"Password changed successfully! Redirecting to login page..."
+							);
+							router.push("/login");
+						}
+					}}
+				>
+					{({ isSubmitting }) => (
+						<Form>
+							<Box my={4}>
+								<InputField
+									name="password"
+									placeholder="new password"
+									label="New Password"
+									type="password"
+								/>
+							</Box>
+							<Button
+								mt={1}
+								type="submit"
+								isLoading={isSubmitting}
+								colorScheme="teal"
+							>
+								Change Password
+							</Button>
+						</Form>
+					)}
+				</Formik>
+			</Wrapper>
+		</React.Fragment>
 	);
 };
 

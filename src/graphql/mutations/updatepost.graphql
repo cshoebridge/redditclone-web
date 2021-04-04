@@ -1,8 +1,5 @@
-mutation UpdatePost($title: String!, $id: Float!) {
-	updatePost(title: $title, id: $id) {
-		id
-		title
-		createdAt
-		updatedAt
-	}
+mutation updatePost($id: Float!, $title: String!, $text: String!){
+  updatePost(id:$id, input:{title:$title, text:$text}) {
+    ...RegularPost
+  }
 }

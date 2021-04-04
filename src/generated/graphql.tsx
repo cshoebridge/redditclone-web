@@ -30,18 +30,21 @@ export type Post = {
   __typename?: 'Post';
   id: Scalars['Int'];
   title: Scalars['String'];
+  text: Scalars['String'];
+  points: Scalars['Int'];
+  authorId: Scalars['Float'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
 
 export type UserResponse = {
   __typename?: 'UserResponse';
-  errors?: Maybe<Array<FieldError>>;
+  errors?: Maybe<Array<UserFieldError>>;
   user?: Maybe<User>;
 };
 
-export type FieldError = {
-  __typename?: 'FieldError';
+export type UserFieldError = {
+  __typename?: 'UserFieldError';
   field?: Maybe<Scalars['String']>;
   message: Scalars['String'];
 };
@@ -51,6 +54,7 @@ export type User = {
   id: Scalars['Int'];
   username: Scalars['String'];
   email: Scalars['String'];
+  posts: Array<Post>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -69,12 +73,12 @@ export type Mutation = {
 
 
 export type MutationCreatePostArgs = {
-  title: Scalars['String'];
+  input: PostInput;
 };
 
 
 export type MutationUpdatePostArgs = {
-  title: Scalars['String'];
+  input: PostInput;
   id: Scalars['Float'];
 };
 
@@ -104,6 +108,11 @@ export type MutationChangePasswordArgs = {
   token: Scalars['String'];
 };
 
+export type PostInput = {
+  title: Scalars['String'];
+  text: Scalars['String'];
+};
+
 export type RegisterInput = {
   username: Scalars['String'];
   password: Scalars['String'];
@@ -130,7 +139,7 @@ export type ChangePasswordResponse = {
 
 export type RegularPostFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'title' | 'createdAt' | 'updatedAt'>
+  & Pick<Post, 'id' | 'title' | 'authorId' | 'createdAt' | 'updatedAt'>
 );
 
 export type RegularUserFragment = (
@@ -154,6 +163,7 @@ export type ChangePasswordMutation = (
 
 export type CreatePostMutationVariables = Exact<{
   title: Scalars['String'];
+  text: Scalars['String'];
 }>;
 
 
@@ -161,7 +171,7 @@ export type CreatePostMutation = (
   { __typename?: 'Mutation' }
   & { createPost: (
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'title' | 'createdAt'>
+    & RegularPostFragment
   ) }
 );
 
@@ -199,8 +209,8 @@ export type LoginMutation = (
   & { login: (
     { __typename?: 'UserResponse' }
     & { errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'field' | 'message'>
+      { __typename?: 'UserFieldError' }
+      & Pick<UserFieldError, 'field' | 'message'>
     )>>, user?: Maybe<(
       { __typename?: 'User' }
       & RegularUserFragment
@@ -231,8 +241,8 @@ export type RegisterMutation = (
   & { register: (
     { __typename?: 'UserResponse' }
     & { errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'message' | 'field'>
+      { __typename?: 'UserFieldError' }
+      & Pick<UserFieldError, 'message' | 'field'>
     )>>, user?: Maybe<(
       { __typename?: 'User' }
       & RegularUserFragment
@@ -241,8 +251,9 @@ export type RegisterMutation = (
 );
 
 export type UpdatePostMutationVariables = Exact<{
-  title: Scalars['String'];
   id: Scalars['Float'];
+  title: Scalars['String'];
+  text: Scalars['String'];
 }>;
 
 
@@ -250,7 +261,7 @@ export type UpdatePostMutation = (
   { __typename?: 'Mutation' }
   & { updatePost?: Maybe<(
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'title' | 'createdAt' | 'updatedAt'>
+    & RegularPostFragment
   )> }
 );
 
@@ -262,8 +273,8 @@ export type MeQuery = (
   & { me: (
     { __typename?: 'UserResponse' }
     & { errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'message' | 'field'>
+      { __typename?: 'UserFieldError' }
+      & Pick<UserFieldError, 'message' | 'field'>
     )>>, user?: Maybe<(
       { __typename?: 'User' }
       & RegularUserFragment
@@ -299,6 +310,7 @@ export const RegularPostFragmentDoc = gql`
     fragment RegularPost on Post {
   id
   title
+  authorId
   createdAt
   updatedAt
 }
@@ -325,14 +337,12 @@ export function useChangePasswordMutation() {
   return Urql.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument);
 };
 export const CreatePostDocument = gql`
-    mutation CreatePost($title: String!) {
-  createPost(title: $title) {
-    id
-    title
-    createdAt
+    mutation CreatePost($title: String!, $text: String!) {
+  createPost(input: {title: $title, text: $text}) {
+    ...RegularPost
   }
 }
-    `;
+    ${RegularPostFragmentDoc}`;
 
 export function useCreatePostMutation() {
   return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument);
@@ -405,15 +415,12 @@ export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
 };
 export const UpdatePostDocument = gql`
-    mutation UpdatePost($title: String!, $id: Float!) {
-  updatePost(title: $title, id: $id) {
-    id
-    title
-    createdAt
-    updatedAt
+    mutation updatePost($id: Float!, $title: String!, $text: String!) {
+  updatePost(id: $id, input: {title: $title, text: $text}) {
+    ...RegularPost
   }
 }
-    `;
+    ${RegularPostFragmentDoc}`;
 
 export function useUpdatePostMutation() {
   return Urql.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument);
