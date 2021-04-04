@@ -1,5 +1,15 @@
 mutation CreatePost($title: String!, $text: String!) {
 	createPost(input: { title: $title, text: $text }) {
-		...RegularPost
+		errors {
+			field
+			message
+		}
+		post {
+			id
+			title
+			text
+			authorId
+			createdAt
+		}
 	}
 }

@@ -1,7 +1,7 @@
 fragment RegularPost on Post {
-	id
-	title
-	authorId
-	createdAt
-	updatedAt
+	  id
+      title
+      text
+      authorId
+      createdAt
 }

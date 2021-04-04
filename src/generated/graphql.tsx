@@ -45,8 +45,8 @@ export type UserResponse = {
 
 export type UserFieldError = {
   __typename?: 'UserFieldError';
-  field?: Maybe<Scalars['String']>;
   message: Scalars['String'];
+  field?: Maybe<Scalars['String']>;
 };
 
 export type User = {
@@ -61,7 +61,7 @@ export type User = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createPost: Post;
+  createPost: PostResponse;
   updatePost?: Maybe<Post>;
   deletePost: Scalars['String'];
   register: UserResponse;
@@ -108,6 +108,18 @@ export type MutationChangePasswordArgs = {
   token: Scalars['String'];
 };
 
+export type PostResponse = {
+  __typename?: 'PostResponse';
+  errors?: Maybe<Array<PostFieldError>>;
+  post?: Maybe<Post>;
+};
+
+export type PostFieldError = {
+  __typename?: 'PostFieldError';
+  message: Scalars['String'];
+  field: Scalars['String'];
+};
+
 export type PostInput = {
   title: Scalars['String'];
   text: Scalars['String'];
@@ -139,7 +151,7 @@ export type ChangePasswordResponse = {
 
 export type RegularPostFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'title' | 'authorId' | 'createdAt' | 'updatedAt'>
+  & Pick<Post, 'id' | 'title' | 'text' | 'authorId' | 'createdAt'>
 );
 
 export type RegularUserFragment = (
@@ -170,8 +182,14 @@ export type CreatePostMutationVariables = Exact<{
 export type CreatePostMutation = (
   { __typename?: 'Mutation' }
   & { createPost: (
-    { __typename?: 'Post' }
-    & RegularPostFragment
+    { __typename?: 'PostResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'PostFieldError' }
+      & Pick<PostFieldError, 'field' | 'message'>
+    )>>, post?: Maybe<(
+      { __typename?: 'Post' }
+      & Pick<Post, 'id' | 'title' | 'text' | 'authorId' | 'createdAt'>
+    )> }
   ) }
 );
 
@@ -310,9 +328,9 @@ export const RegularPostFragmentDoc = gql`
     fragment RegularPost on Post {
   id
   title
+  text
   authorId
   createdAt
-  updatedAt
 }
     `;
 export const RegularUserFragmentDoc = gql`
@@ -339,10 +357,20 @@ export function useChangePasswordMutation() {
 export const CreatePostDocument = gql`
     mutation CreatePost($title: String!, $text: String!) {
   createPost(input: {title: $title, text: $text}) {
-    ...RegularPost
+    errors {
+      field
+      message
+    }
+    post {
+      id
+      title
+      text
+      authorId
+      createdAt
+    }
   }
 }
-    ${RegularPostFragmentDoc}`;
+    `;
 
 export function useCreatePostMutation() {
   return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument);

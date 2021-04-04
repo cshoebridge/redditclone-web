@@ -1,6 +1,11 @@
-import { FieldError } from "../generated/graphql";
+import { PostFieldError, UserFieldError } from "../generated/graphql";
 
-export const toErrorMap = (errors: FieldError[]) => {
+interface FieldError {
+	field: string
+	message: string
+}
+
+export const toErrorMap = (errors: Array<FieldError> ) => {
 	const errorMap: Record<string, string> = {};
 	errors.forEach(({ field, message }) => {
 		if (field) {
