@@ -1,7 +1,7 @@
-import { PostFieldError, UserFieldError } from "../generated/graphql";
+import { Maybe } from "graphql/jsutils/Maybe";
 
-interface FieldError {
-	field: string
+export interface FieldError {
+	field?: Maybe<string>
 	message: string
 }
 
