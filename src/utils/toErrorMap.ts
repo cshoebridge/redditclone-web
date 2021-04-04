@@ -1,7 +1,5 @@
-import { Maybe } from "graphql/jsutils/Maybe";
-
 export interface FieldError {
-	field?: Maybe<string>
+	field?: string | null
 	message: string
 }
 
