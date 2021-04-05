@@ -11,7 +11,7 @@ import { createUrqlClient } from "../utils/createUrqlClient";
 import { toErrorMap } from "../utils/toErrorMap";
 
 const CreatePost: React.FC = ({}) => {
-    const [, createPost] = useCreatePostMutation()
+	const [, createPost] = useCreatePostMutation();
 	const router = useRouter();
 	return (
 		<React.Fragment>
@@ -19,13 +19,14 @@ const CreatePost: React.FC = ({}) => {
 			<Wrapper variant="small">
 				<Formik
 					initialValues={{ title: "", text: "" }}
-					onSubmit={async (values, {setErrors}) => {
+					onSubmit={async (values, { setErrors }) => {
 						const response = await createPost(values);
 						if (response.data?.createPost.errors) {
-							const errors = toErrorMap(response.data.createPost.errors)
-							setErrors(errors)
-						}
-						else if(response.data?.createPost.post) {
+							const errors = toErrorMap(
+								response.data.createPost.errors
+							);
+							setErrors(errors);
+						} else if (response.data?.createPost.post) {
 							router.push("/");
 						}
 					}}
@@ -38,12 +39,12 @@ const CreatePost: React.FC = ({}) => {
 									placeholder="Title"
 									label="Post Title"
 								/>
-                                <InputField 
-                                    name="text"
-                                    placeholder="Text"
-                                    label="Post Content"
-                                    variant="area"
-                                />
+								<InputField
+									name="text"
+									placeholder="Text"
+									label="Post Content"
+									variant="area"
+								/>
 							</Box>
 							<Button
 								mt={1}
@@ -61,4 +62,4 @@ const CreatePost: React.FC = ({}) => {
 	);
 };
 
-export default withUrqlClient(createUrqlClient)(CreatePost)
+export default withUrqlClient(createUrqlClient)(CreatePost);
