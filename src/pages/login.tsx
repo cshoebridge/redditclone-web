@@ -13,6 +13,8 @@ import { NavBar } from "../components/NavBar";
 
 const Login: React.FC<{}> = ({}) => {
 	const router = useRouter();
+	const {next} = router.query;
+	console.log(next);
 	const [, login] = useLoginMutation();
 	return (
 		<React.Fragment>
@@ -28,8 +30,13 @@ const Login: React.FC<{}> = ({}) => {
 							);
 							setErrors(errors);
 						} else if (response.data?.login.user) {
-							//register success!
-							router.push("/");
+							//login success!
+							if (typeof next !== "string") {
+								router.replace("/");
+							}
+							else {
+								router.replace(next);
+							}
 						}
 					}}
 				>

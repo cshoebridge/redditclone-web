@@ -42,7 +42,7 @@ const ChangePassword: React.FC<changePasswordProps> = ({}) => {
 								alert(
 									"Redirecting to 'I forgot my password' page..."
 								);
-								router.push("/forgotpassword");
+								router.replace("/forgotpassword");
 							} else {
 								const errors = toErrorMap([
 									{
@@ -57,7 +57,7 @@ const ChangePassword: React.FC<changePasswordProps> = ({}) => {
 							alert(
 								"Password changed successfully! Redirecting to login page..."
 							);
-							router.push("/login");
+							router.replace("/login");
 						}
 					}}
 				>

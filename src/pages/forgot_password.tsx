@@ -23,7 +23,7 @@ const ForgotPassword: React.FC<forgot_passwordProps> = ({}) => {
 					onSubmit={async ({ email }) => {
 						const response = await forgotPassword({ email });
 						alert(response.data?.forgotPassword.message);
-						router.push("/login");
+						router.replace("/login");
 					}}
 				>
 					{({ isSubmitting }) => (

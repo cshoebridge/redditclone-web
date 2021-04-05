@@ -2,17 +2,21 @@ import { Box, Button } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect } from "react";
 import { InputField } from "../components/InputField";
 import { NavBar } from "../components/NavBar";
 import Wrapper from "../components/Wrapper";
-import { useCreatePostMutation } from "../generated/graphql";
+import { useCreatePostMutation, useMeQuery } from "../generated/graphql";
+import { useIsAuth } from "../hooks/useIsAuth";
 import { createUrqlClient } from "../utils/createUrqlClient";
+import { isServer } from "../utils/isServer";
 import { toErrorMap } from "../utils/toErrorMap";
 
 const CreatePost: React.FC = ({}) => {
-	const [, createPost] = useCreatePostMutation();
 	const router = useRouter();
+	useIsAuth();
+	
+	const [, createPost] = useCreatePostMutation();
 	return (
 		<React.Fragment>
 			<NavBar />
@@ -20,7 +24,7 @@ const CreatePost: React.FC = ({}) => {
 				<Formik
 					initialValues={{ title: "", text: "" }}
 					onSubmit={async (values, { setErrors }) => {
-						const response = await createPost(values);					
+						const response = await createPost(values);
 						if (response.data?.createPost.errors) {
 							const errors = toErrorMap(
 								response.data.createPost.errors
