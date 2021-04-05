@@ -12,10 +12,10 @@ const Index = () => {
 			<NavBar />
 			<Wrapper>
 				{fetching || !data
-					? <div>Loading...</div>
+					? "Loading..."
 					: data.posts.map((post) => (
-							<div>
-								<p key={post.id}>{post.title}</p>
+							<div key={`post-${post.id}-container`}>
+								<p key={`post-${post.id}`}>{post.title}</p>
 								<br></br>
 							</div>
 					  ))}
