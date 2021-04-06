@@ -6,7 +6,9 @@ import { usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 
 const Index = () => {
-	const [{ data, fetching }] = usePostsQuery();
+	const [{ data, fetching }] = usePostsQuery({ variables: {
+		limit: 10
+	}});
 	return (
 		<React.Fragment>
 			<NavBar />

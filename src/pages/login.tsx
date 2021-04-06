@@ -13,7 +13,7 @@ import { NavBar } from "../components/NavBar";
 
 const Login: React.FC<{}> = ({}) => {
 	const router = useRouter();
-	const {next} = router.query;
+	const { next } = router.query;
 	console.log(next);
 	const [, login] = useLoginMutation();
 	return (
@@ -33,8 +33,7 @@ const Login: React.FC<{}> = ({}) => {
 							//login success!
 							if (typeof next !== "string") {
 								router.replace("/");
-							}
-							else {
+							} else {
 								router.replace(next);
 							}
 						}
