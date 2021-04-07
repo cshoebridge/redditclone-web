@@ -1,5 +1,9 @@
 query Posts($limit: Int!, $cursor: String) {
 	posts(limit: $limit, cursor: $cursor) {
-		...RegularPost
+		id
+		title
+		createdAt
+		textSnippet
+		authorId
 	}
 }

@@ -41,6 +41,7 @@ export type Post = {
   authorId: Scalars['Float'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+  textSnippet: Scalars['String'];
 };
 
 export type UserResponse = {
@@ -329,7 +330,7 @@ export type PostsQuery = (
   { __typename?: 'Query' }
   & { posts: Array<(
     { __typename?: 'Post' }
-    & RegularPostFragment
+    & Pick<Post, 'id' | 'title' | 'createdAt' | 'textSnippet' | 'authorId'>
   )> }
 );
 
@@ -493,10 +494,14 @@ export function usePostQuery(options: Omit<Urql.UseQueryArgs<PostQueryVariables>
 export const PostsDocument = gql`
     query Posts($limit: Int!, $cursor: String) {
   posts(limit: $limit, cursor: $cursor) {
-    ...RegularPost
+    id
+    title
+    createdAt
+    textSnippet
+    authorId
   }
 }
-    ${RegularPostFragmentDoc}`;
+    `;
 
 export function usePostsQuery(options: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<PostsQuery>({ query: PostsDocument, ...options });
