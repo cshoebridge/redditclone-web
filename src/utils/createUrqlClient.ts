@@ -10,6 +10,7 @@ import {
 } from "../generated/graphql";
 import { typeSafeUpdateQuery } from "./typeSafeUpdateQuery";
 import Router from "next/router";
+import { cursorPagination } from "./cursorPagination";
 
 // all errors thrown to urql client get pumped into here
 const errorExchange: Exchange = ({ forward }) => (ops$) => {
@@ -31,6 +32,11 @@ export const createUrqlClient = (ssrExchange: any) => ({
 	exchanges: [
 		dedupExchange,
 		cacheExchange({
+			resolvers: {
+				Query: {
+					posts: cursorPagination()
+				}
+			},
 			updates: {
 				Mutation: {
 					login: (result, args, cache, info) => {
