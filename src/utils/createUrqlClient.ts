@@ -32,10 +32,15 @@ export const createUrqlClient = (ssrExchange: any) => ({
 	exchanges: [
 		dedupExchange,
 		cacheExchange({
+			keys: {
+				PostPagination: () => null,
+				UserResponse: () => null,
+				UserFieldError: () => null,
+			},
 			resolvers: {
 				Query: {
-					posts: cursorPagination()
-				}
+					posts: cursorPagination(),
+				},
 			},
 			updates: {
 				Mutation: {
@@ -51,11 +56,9 @@ export const createUrqlClient = (ssrExchange: any) => ({
 								) {
 									return cachedMeQuery;
 								} else {
-									return {
-										me: {
-											user: loginQueryResult.login.user,
-										},
-									};
+									cachedMeQuery.me.user =
+										loginQueryResult.login.user;
+									return cachedMeQuery;
 								}
 							}
 						);
@@ -81,13 +84,9 @@ export const createUrqlClient = (ssrExchange: any) => ({
 								) {
 									return cachedMeQuery;
 								} else {
-									return {
-										me: {
-											user:
-												registerQueryResult.register
-													.user,
-										},
-									};
+									cachedMeQuery.me.user =
+										registerQueryResult.register.user;
+									return cachedMeQuery;
 								}
 							}
 						);
@@ -101,11 +100,8 @@ export const createUrqlClient = (ssrExchange: any) => ({
 								if (!logoutQueryResult.logout.success) {
 									return cachedMeQuery;
 								} else {
-									return {
-										me: {
-											user: null,
-										},
-									};
+									cachedMeQuery.me.user = null;
+									return cachedMeQuery;
 								}
 							}
 						);

@@ -14,7 +14,6 @@ import { NavBar } from "../components/NavBar";
 const Login: React.FC<{}> = ({}) => {
 	const router = useRouter();
 	const { next } = router.query;
-	console.log(next);
 	const [, login] = useLoginMutation();
 	return (
 		<React.Fragment>

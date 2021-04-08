@@ -16,7 +16,7 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  posts: Array<Post>;
+  posts: PostPagination;
   post?: Maybe<Post>;
   me: UserResponse;
 };
@@ -30,6 +30,12 @@ export type QueryPostsArgs = {
 
 export type QueryPostArgs = {
   id: Scalars['Float'];
+};
+
+export type PostPagination = {
+  __typename?: 'PostPagination';
+  posts: Array<Post>;
+  allFetched: Scalars['Boolean'];
 };
 
 export type Post = {
@@ -328,10 +334,14 @@ export type PostsQueryVariables = Exact<{
 
 export type PostsQuery = (
   { __typename?: 'Query' }
-  & { posts: Array<(
-    { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'title' | 'createdAt' | 'textSnippet' | 'authorId'>
-  )> }
+  & { posts: (
+    { __typename?: 'PostPagination' }
+    & Pick<PostPagination, 'allFetched'>
+    & { posts: Array<(
+      { __typename?: 'Post' }
+      & Pick<Post, 'id' | 'title' | 'createdAt' | 'textSnippet' | 'authorId'>
+    )> }
+  ) }
 );
 
 export const RegularPostFragmentDoc = gql`
@@ -494,11 +504,14 @@ export function usePostQuery(options: Omit<Urql.UseQueryArgs<PostQueryVariables>
 export const PostsDocument = gql`
     query Posts($limit: Int!, $cursor: String) {
   posts(limit: $limit, cursor: $cursor) {
-    id
-    title
-    createdAt
-    textSnippet
-    authorId
+    posts {
+      id
+      title
+      createdAt
+      textSnippet
+      authorId
+    }
+    allFetched
   }
 }
     `;

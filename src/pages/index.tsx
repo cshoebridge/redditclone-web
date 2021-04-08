@@ -8,21 +8,23 @@ import { createUrqlClient } from "../utils/createUrqlClient";
 
 const Index = () => {
 	const [queryVars, setQueryVars] = useState({
-		limit: 10, cursor: null as null | string
+		limit: 25,
+		cursor: null as null | string,
 	});
 	const [{ data, fetching }] = usePostsQuery({ variables: queryVars });
+
 	return (
 		<React.Fragment>
 			<NavBar />
 			<Wrapper>
-				{fetching || !data ? (
+				{fetching && !data ? (
 					"Loading..."
 				) : (
 					<Stack spacing={8} mt="4%" mb="7%">
 						<Text fontSize="4xl" fontWeight="bold">
 							Posts
 						</Text>
-						{data.posts.map((post) => (
+						{data?.posts.posts.map((post) => (
 							<Box
 								key={`post-${post.id}-container`}
 								p={5}
@@ -33,14 +35,23 @@ const Index = () => {
 								<Text mt={4}>{post.textSnippet}</Text>
 							</Box>
 						))}
-
-						<Button width="100%" onClick={() => {
-							setQueryVars((prev) => ({
-								...prev, cursor: data.posts[data.posts.length - 1].createdAt
-							}))
-						}}>
-							Load more
-						</Button>
+						{data && !data.posts.allFetched ? (
+							<Button
+								width="100%"
+								onClick={() => {
+									setQueryVars((prev) => ({
+										...prev,
+										cursor:
+											data.posts.posts[
+												data.posts.posts.length - 1
+											].createdAt,
+									}));
+								}}
+								isLoading={fetching}
+							>
+								Load more
+							</Button>
+						) : null}
 					</Stack>
 				)}
 			</Wrapper>
