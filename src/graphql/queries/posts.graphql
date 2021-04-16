@@ -5,7 +5,10 @@ query Posts($limit: Int!, $cursor: String) {
 			title
 			createdAt
 			textSnippet
-			authorId
+			author {
+				id
+				username
+			}
 		}
 		allFetched
 	}

@@ -45,9 +45,20 @@ export type Post = {
   text: Scalars['String'];
   points: Scalars['Int'];
   authorId: Scalars['Float'];
+  author: User;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   textSnippet: Scalars['String'];
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['Int'];
+  username: Scalars['String'];
+  email: Scalars['String'];
+  posts: Array<Post>;
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
 };
 
 export type UserResponse = {
@@ -60,16 +71,6 @@ export type UserFieldError = {
   __typename?: 'UserFieldError';
   message: Scalars['String'];
   field?: Maybe<Scalars['String']>;
-};
-
-export type User = {
-  __typename?: 'User';
-  id: Scalars['Int'];
-  username: Scalars['String'];
-  email: Scalars['String'];
-  posts: Array<Post>;
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
 };
 
 export type Mutation = {
@@ -339,7 +340,11 @@ export type PostsQuery = (
     & Pick<PostPagination, 'allFetched'>
     & { posts: Array<(
       { __typename?: 'Post' }
-      & Pick<Post, 'id' | 'title' | 'createdAt' | 'textSnippet' | 'authorId'>
+      & Pick<Post, 'id' | 'title' | 'createdAt' | 'textSnippet'>
+      & { author: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'username'>
+      ) }
     )> }
   ) }
 );
@@ -509,7 +514,10 @@ export const PostsDocument = gql`
       title
       createdAt
       textSnippet
-      authorId
+      author {
+        id
+        username
+      }
     }
     allFetched
   }

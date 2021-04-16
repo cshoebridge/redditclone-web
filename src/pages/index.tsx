@@ -5,6 +5,7 @@ import { NavBar } from "../components/NavBar";
 import Wrapper from "../components/Wrapper";
 import { usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
+import { formatDate } from "../utils/formatDate";
 
 const Index = () => {
 	const [queryVars, setQueryVars] = useState({
@@ -33,6 +34,9 @@ const Index = () => {
 							>
 								<Heading fontSize="xl">{post.title}</Heading>
 								<Text mt={4}>{post.textSnippet}</Text>
+								<Box color="gray.600" fontSize="sm">
+									by {post.author.username} on {formatDate(post.createdAt)}
+								</Box>
 							</Box>
 						))}
 						{data && !data.posts.allFetched ? (
