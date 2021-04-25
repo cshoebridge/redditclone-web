@@ -2,6 +2,7 @@ import { cacheExchange } from "@urql/exchange-graphcache";
 import { dedupExchange, Exchange, fetchExchange } from "urql";
 import { pipe, tap } from "wonka";
 import {
+	CreatePostMutation,
 	LoginMutation,
 	LogoutMutation,
 	MeDocument,
@@ -105,6 +106,20 @@ export const createUrqlClient = (ssrExchange: any) => ({
 								}
 							}
 						);
+					},
+					createPost: (result, args, cache, info) => {
+						const allFields = cache.inspectFields("Query");
+						const fieldInfos = allFields.filter(
+							(info) => info.fieldName === "posts"
+						);
+						// each pagination is stored as a seperate field in the cache, so has to be invalidated seperately
+						fieldInfos.forEach((fi) => {
+							cache.invalidate(
+								"Query",
+								"posts",
+								fi.arguments || {}
+							);
+						});
 					},
 				},
 			},

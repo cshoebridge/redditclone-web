@@ -83,6 +83,7 @@ export type Mutation = {
   logout: BoolWithMessageResponse;
   forgotPassword: BoolWithMessageResponse;
   changePassword: ChangePasswordResponse;
+  vote: Scalars['Boolean'];
 };
 
 
@@ -120,6 +121,12 @@ export type MutationForgotPasswordArgs = {
 export type MutationChangePasswordArgs = {
   newPassword: Scalars['String'];
   token: Scalars['String'];
+};
+
+
+export type MutationVoteArgs = {
+  direction: UpdootDirection;
+  postId: Scalars['Int'];
 };
 
 export type PostResponse = {
@@ -163,9 +170,19 @@ export type ChangePasswordResponse = {
   field?: Maybe<Scalars['String']>;
 };
 
+/** UP or DOWN */
+export enum UpdootDirection {
+  Up = 'UP',
+  Down = 'DOWN'
+}
+
 export type RegularPostFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'title' | 'text' | 'authorId' | 'createdAt'>
+  & Pick<Post, 'id' | 'title' | 'createdAt' | 'textSnippet' | 'points'>
+  & { author: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'username'>
+  ) }
 );
 
 export type RegularUserFragment = (
@@ -297,6 +314,17 @@ export type UpdatePostMutation = (
   )> }
 );
 
+export type VoteMutationVariables = Exact<{
+  direction: UpdootDirection;
+  postId: Scalars['Int'];
+}>;
+
+
+export type VoteMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'vote'>
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -340,11 +368,7 @@ export type PostsQuery = (
     & Pick<PostPagination, 'allFetched'>
     & { posts: Array<(
       { __typename?: 'Post' }
-      & Pick<Post, 'id' | 'title' | 'createdAt' | 'textSnippet'>
-      & { author: (
-        { __typename?: 'User' }
-        & Pick<User, 'id' | 'username'>
-      ) }
+      & RegularPostFragment
     )> }
   ) }
 );
@@ -353,9 +377,13 @@ export const RegularPostFragmentDoc = gql`
     fragment RegularPost on Post {
   id
   title
-  text
-  authorId
   createdAt
+  textSnippet
+  author {
+    id
+    username
+  }
+  points
 }
     `;
 export const RegularUserFragmentDoc = gql`
@@ -478,6 +506,15 @@ export const UpdatePostDocument = gql`
 export function useUpdatePostMutation() {
   return Urql.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument);
 };
+export const VoteDocument = gql`
+    mutation Vote($direction: UpdootDirection!, $postId: Int!) {
+  vote(direction: $direction, postId: $postId)
+}
+    `;
+
+export function useVoteMutation() {
+  return Urql.useMutation<VoteMutation, VoteMutationVariables>(VoteDocument);
+};
 export const MeDocument = gql`
     query Me {
   me {
@@ -510,19 +547,12 @@ export const PostsDocument = gql`
     query Posts($limit: Int!, $cursor: String) {
   posts(limit: $limit, cursor: $cursor) {
     posts {
-      id
-      title
-      createdAt
-      textSnippet
-      author {
-        id
-        username
-      }
+      ...RegularPost
     }
     allFetched
   }
 }
-    `;
+    ${RegularPostFragmentDoc}`;
 
 export function usePostsQuery(options: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<PostsQuery>({ query: PostsDocument, ...options });

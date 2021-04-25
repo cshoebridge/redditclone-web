@@ -1,14 +1,7 @@
 query Posts($limit: Int!, $cursor: String) {
 	posts(limit: $limit, cursor: $cursor) {
 		posts {
-			id
-			title
-			createdAt
-			textSnippet
-			author {
-				id
-				username
-			}
+			...RegularPost
 		}
 		allFetched
 	}

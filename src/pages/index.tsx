@@ -1,7 +1,15 @@
-import { Box, Button, Heading, Link, Stack, Text } from "@chakra-ui/react";
+import {
+	Box,
+	Button,
+	Heading,
+	IconButton,
+	Stack,
+	Text,
+} from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import React, { useState } from "react";
 import { NavBar } from "../components/NavBar";
+import { PostComponent } from "../components/PostComponent";
 import Wrapper from "../components/Wrapper";
 import { usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
@@ -26,18 +34,7 @@ const Index = () => {
 							Posts
 						</Text>
 						{data?.posts.posts.map((post) => (
-							<Box
-								key={`post-${post.id}-container`}
-								p={5}
-								shadow="md"
-								borderWidth="1px"
-							>
-								<Heading fontSize="xl">{post.title}</Heading>
-								<Text mt={4}>{post.textSnippet}</Text>
-								<Box color="gray.600" fontSize="sm">
-									by {post.author.username} on {formatDate(post.createdAt)}
-								</Box>
-							</Box>
+							<PostComponent post={post} />
 						))}
 						{data && !data.posts.allFetched ? (
 							<Button
