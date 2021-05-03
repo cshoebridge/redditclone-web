@@ -1,10 +1,7 @@
 import {
-	Box,
 	Button,
-	Heading,
-	IconButton,
 	Stack,
-	Text,
+	Text
 } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import React, { useState } from "react";
@@ -13,7 +10,6 @@ import { PostComponent } from "../components/PostComponent";
 import Wrapper from "../components/Wrapper";
 import { usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
-import { formatDate } from "../utils/formatDate";
 
 const Index = () => {
 	const [queryVars, setQueryVars] = useState({

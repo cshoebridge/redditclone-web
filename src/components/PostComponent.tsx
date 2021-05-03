@@ -1,4 +1,4 @@
-import { Box, Heading, IconButton, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import {
 	RegularPostFragment,
@@ -14,7 +14,7 @@ interface PostProps {
 }
 
 const iconButtonOptions = {
-	variant: "ghost",
+	variant: "solid",
 	mx: 0.5,
 };
 
@@ -23,50 +23,65 @@ export const PostComponent: React.FC<PostProps> = ({ post }) => {
 	const updoots = useState(0);
 
 	return (
-		<Box
+		<Flex
 			key={`post-${post.id}-container`}
 			p={5}
 			shadow="md"
 			borderWidth="1px"
+			flexDirection="row"
 		>
-			<Heading fontSize="xl">{post.title}</Heading>
-			<Text mt={4}>{post.textSnippet}</Text>
-			<Box color="gray.600" fontSize="sm">
-				<p>
-					by {post.author.username} on {formatDate(post.createdAt)}
-				</p>
-				<p>
+			<Flex color="gray.600" fontSize="sm" flexDirection="column" alignItems="center" marginRight={"3.5"}>
+				<Box>
 					<IconButton
 						aria-label="updoot button"
 						icon={<BiUpvote />}
 						{...iconButtonOptions}
-						isLoading={
-							fetching
+						isLoading={fetching}
+						colorScheme={
+							post.voteStatus === UpdootDirection.Up
+								? "blue"
+								: undefined
 						}
-						onClick={() =>
-							vote({
-								direction: "UP" as UpdootDirection,
-								postId: post.id,
-							})
-						}
+						onClick={() => {
+							if (post.voteStatus !== UpdootDirection.Up) {
+								vote({
+									direction: UpdootDirection.Up,
+									postId: post.id,
+								});
+							}
+						}}
 					/>
-					{post.points}
+				</Box>
+				<Box>{post.points}</Box>
+				<Box>
 					<IconButton
 						aria-label="downdoot button"
 						icon={<BiDownvote />}
 						{...iconButtonOptions}
-						isLoading={
-							fetching
+						isLoading={fetching}
+						colorScheme={
+							post.voteStatus === UpdootDirection.Down
+								? "orange"
+								: undefined
 						}
-						onClick={() =>
-							vote({
-								direction: "DOWN" as UpdootDirection,
-								postId: post.id,
-							})
-						}
+						onClick={() => {
+							if (post.voteStatus !== UpdootDirection.Down) {
+								vote({
+									direction: UpdootDirection.Down,
+									postId: post.id,
+								});
+							}
+						}}
 					/>
+				</Box>
+			</Flex>
+			<Box>
+				<Heading fontSize="xl">{post.title}</Heading>
+				<Text mt={4}>{post.textSnippet}</Text>
+				<p>
+					by {post.author.username} on {formatDate(post.createdAt)}
 				</p>
 			</Box>
-		</Box>
+		</Flex>
 	);
 };

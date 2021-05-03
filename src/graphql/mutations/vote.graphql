@@ -1,3 +1,6 @@
 mutation Vote($direction: UpdootDirection!, $postId: Int!) {
-	vote(direction: $direction, postId: $postId)
+	vote(direction: $direction, postId: $postId) {
+		message
+		success
+	}
 }

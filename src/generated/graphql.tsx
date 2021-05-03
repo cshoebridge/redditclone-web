@@ -44,12 +44,19 @@ export type Post = {
   title: Scalars['String'];
   text: Scalars['String'];
   points: Scalars['Int'];
+  voteStatus?: Maybe<UpdootDirection>;
   authorId: Scalars['Float'];
   author: User;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   textSnippet: Scalars['String'];
 };
+
+/** UP or DOWN */
+export enum UpdootDirection {
+  Up = 'UP',
+  Down = 'DOWN'
+}
 
 export type User = {
   __typename?: 'User';
@@ -83,7 +90,7 @@ export type Mutation = {
   logout: BoolWithMessageResponse;
   forgotPassword: BoolWithMessageResponse;
   changePassword: ChangePasswordResponse;
-  vote: Scalars['Boolean'];
+  vote: BoolWithMessageResponse;
 };
 
 
@@ -170,15 +177,9 @@ export type ChangePasswordResponse = {
   field?: Maybe<Scalars['String']>;
 };
 
-/** UP or DOWN */
-export enum UpdootDirection {
-  Up = 'UP',
-  Down = 'DOWN'
-}
-
 export type RegularPostFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'title' | 'createdAt' | 'textSnippet' | 'points'>
+  & Pick<Post, 'id' | 'title' | 'createdAt' | 'textSnippet' | 'voteStatus' | 'points'>
   & { author: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username'>
@@ -322,7 +323,10 @@ export type VoteMutationVariables = Exact<{
 
 export type VoteMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'vote'>
+  & { vote: (
+    { __typename?: 'BoolWithMessageResponse' }
+    & Pick<BoolWithMessageResponse, 'message' | 'success'>
+  ) }
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -379,6 +383,7 @@ export const RegularPostFragmentDoc = gql`
   title
   createdAt
   textSnippet
+  voteStatus
   author {
     id
     username
@@ -508,7 +513,10 @@ export function useUpdatePostMutation() {
 };
 export const VoteDocument = gql`
     mutation Vote($direction: UpdootDirection!, $postId: Int!) {
-  vote(direction: $direction, postId: $postId)
+  vote(direction: $direction, postId: $postId) {
+    message
+    success
+  }
 }
     `;
 
