@@ -2,7 +2,6 @@ fragment RegularPost on Post {
 	id
 	title
 	createdAt
-	textSnippet
 	voteStatus
 	author {
 		id

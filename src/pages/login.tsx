@@ -10,14 +10,14 @@ import NextLink from "next/link";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
 import { NavBar } from "../components/NavBar";
+import { Layout } from "../components/Layout";
 
 const Login: React.FC<{}> = ({}) => {
 	const router = useRouter();
 	const { next } = router.query;
 	const [, login] = useLoginMutation();
 	return (
-		<React.Fragment>
-			<NavBar />
+		<Layout>
 			<Wrapper>
 				<Formik
 					initialValues={{ username: "", password: "" }}
@@ -70,7 +70,7 @@ const Login: React.FC<{}> = ({}) => {
 					)}
 				</Formik>
 			</Wrapper>
-		</React.Fragment>
+		</Layout>
 	);
 };
 

@@ -179,7 +179,7 @@ export type ChangePasswordResponse = {
 
 export type RegularPostFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'title' | 'createdAt' | 'textSnippet' | 'voteStatus' | 'points'>
+  & Pick<Post, 'id' | 'title' | 'createdAt' | 'voteStatus' | 'points'>
   & { author: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username'>
@@ -355,6 +355,7 @@ export type PostQuery = (
   { __typename?: 'Query' }
   & { post?: Maybe<(
     { __typename?: 'Post' }
+    & Pick<Post, 'text'>
     & RegularPostFragment
   )> }
 );
@@ -372,6 +373,7 @@ export type PostsQuery = (
     & Pick<PostPagination, 'allFetched'>
     & { posts: Array<(
       { __typename?: 'Post' }
+      & Pick<Post, 'textSnippet'>
       & RegularPostFragment
     )> }
   ) }
@@ -382,7 +384,6 @@ export const RegularPostFragmentDoc = gql`
   id
   title
   createdAt
-  textSnippet
   voteStatus
   author {
     id
@@ -544,6 +545,7 @@ export const PostDocument = gql`
     query Post($id: Float!) {
   post(id: $id) {
     ...RegularPost
+    text
   }
 }
     ${RegularPostFragmentDoc}`;
@@ -556,6 +558,7 @@ export const PostsDocument = gql`
   posts(limit: $limit, cursor: $cursor) {
     posts {
       ...RegularPost
+      textSnippet
     }
     allFetched
   }

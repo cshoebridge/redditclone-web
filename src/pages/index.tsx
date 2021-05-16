@@ -5,8 +5,9 @@ import {
 } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import React, { useState } from "react";
+import { Layout } from "../components/Layout";
 import { NavBar } from "../components/NavBar";
-import { PostComponent } from "../components/PostComponent";
+import { PostPreview } from "../components/PostPreview";
 import Wrapper from "../components/Wrapper";
 import { usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
@@ -19,8 +20,7 @@ const Index = () => {
 	const [{ data, fetching }] = usePostsQuery({ variables: queryVars });
 
 	return (
-		<React.Fragment>
-			<NavBar />
+			<Layout>
 			<Wrapper>
 				{fetching && !data ? (
 					"Loading..."
@@ -30,7 +30,7 @@ const Index = () => {
 							Posts
 						</Text>
 						{data?.posts.posts.map((post) => (
-							<PostComponent post={post} />
+							<PostPreview post={post} />
 						))}
 						{data && !data.posts.allFetched ? (
 							<Button
@@ -52,7 +52,7 @@ const Index = () => {
 					</Stack>
 				)}
 			</Wrapper>
-		</React.Fragment>
+			</Layout>
 	);
 };
 

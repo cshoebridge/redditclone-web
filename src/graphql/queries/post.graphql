@@ -1,5 +1,6 @@
 query Post($id: Float!) {
 	post(id: $id) {
 		...RegularPost
+		text
 	}
 }

@@ -4,6 +4,7 @@ import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { InputField } from "../components/InputField";
+import { Layout } from "../components/Layout";
 import { NavBar } from "../components/NavBar";
 import Wrapper from "../components/Wrapper";
 import { useCreatePostMutation, useMeQuery } from "../generated/graphql";
@@ -18,8 +19,7 @@ const CreatePost: React.FC = ({}) => {
 	
 	const [, createPost] = useCreatePostMutation();
 	return (
-		<React.Fragment>
-			<NavBar />
+			<Layout>
 			<Wrapper variant="small">
 				<Formik
 					initialValues={{ title: "", text: "" }}
@@ -62,7 +62,7 @@ const CreatePost: React.FC = ({}) => {
 					)}
 				</Formik>
 			</Wrapper>
-		</React.Fragment>
+			</Layout>
 	);
 };
 

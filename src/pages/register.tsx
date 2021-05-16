@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { NavBar } from "../components/NavBar";
+import { Layout } from "../components/Layout";
 
 interface registerProps {}
 
@@ -16,8 +17,7 @@ const Register: React.FC<registerProps> = ({}) => {
 	const router = useRouter();
 	const [, register] = useRegisterMutation();
 	return (
-		<React.Fragment>
-			<NavBar />
+		<Layout>
 			<Wrapper>
 				<Formik
 					initialValues={{ username: "", email: "", password: "" }}
@@ -66,7 +66,7 @@ const Register: React.FC<registerProps> = ({}) => {
 					)}
 				</Formik>
 			</Wrapper>
-		</React.Fragment>
+		</Layout>
 	);
 };
 

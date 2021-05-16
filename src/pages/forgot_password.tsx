@@ -4,6 +4,7 @@ import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React from "react";
 import { InputField } from "../components/InputField";
+import { Layout } from "../components/Layout";
 import { NavBar } from "../components/NavBar";
 import Wrapper from "../components/Wrapper";
 import { useForgotPasswordMutation } from "../generated/graphql";
@@ -15,8 +16,7 @@ const ForgotPassword: React.FC<forgot_passwordProps> = ({}) => {
 	const router = useRouter();
 	const [, forgotPassword] = useForgotPasswordMutation();
 	return (
-		<React.Fragment>
-			<NavBar />
+			<Layout>
 			<Wrapper>
 				<Formik
 					initialValues={{ email: "" }}
@@ -47,7 +47,7 @@ const ForgotPassword: React.FC<forgot_passwordProps> = ({}) => {
 					)}
 				</Formik>
 			</Wrapper>
-		</React.Fragment>
+			</Layout>
 	);
 };
 
