@@ -4,7 +4,8 @@ import NextLink from "next/link";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
 
-interface NavBarProps {}
+interface NavBarProps {
+}
 
 export const NavBar: React.FC<NavBarProps> = ({}) => {
 	const [{ data, fetching }] = useMeQuery({
@@ -27,11 +28,11 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
 		);
 	} else {
 		body = (
-			<Flex>
+			<Flex align="center">
 				<Box mr="4">{data.me.user.username}</Box>
 				<Box mr="4">
-					<NextLink href="create_post"> 
-						<Link>Create Post</Link>
+					<NextLink href="create_post">
+						<Button>Create Post</Button>
 					</NextLink>
 				</Box>
 				<Box mr="4">
@@ -48,9 +49,25 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
 	}
 
 	return (
-		<Flex position="sticky" top={0} zIndex={1} color="black" fontWeight="bold" bg="tan" py="4">
-			<Box my="auto" mr="auto" px={5} py={3} fontSize="xl">{'"Reddit" (no, really)'}</Box>
-			<Box my="auto" ml="auto" px={5} py={3} fontSize="md">{body}</Box>
-		</Flex>
+		<Box
+			position="sticky"
+			top={0}
+			zIndex={1}
+			color="black"
+			fontWeight="bold"
+			bg="tan"
+			py="4"
+		>
+			<Flex maxW={"45%"} align="center" mx="auto">
+				<Box my="auto" mr="auto" px={5} py={3} fontSize="4xl">
+					<NextLink href="/">
+						<Link>"Reddit" (no, really)</Link>
+					</NextLink>
+				</Box>
+				<Box my="auto" ml="auto" px={5} py={3} fontSize="md">
+					{body}
+				</Box>
+			</Flex>
+		</Box>
 	);
 };

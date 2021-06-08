@@ -4,6 +4,6 @@ export function typeSafeUpdateQuery<Result, Query>(
 	cache: Cache,
 	qi: QueryInput,
 	result: any,
-	fn: (r: Result, q: Query) => Query) {
+	fn: (result: Result, query: Query) => Query) {
 	return cache.updateQuery(qi, (data) => fn(result, data as any) as any);
 }

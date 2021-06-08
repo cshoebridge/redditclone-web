@@ -1,9 +1,11 @@
-import { Box, Flex, Heading, Link, Text } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
+import { Box, Flex, Heading, IconButton, Link, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import React, { useState } from "react";
 import {
 	Post,
 	RegularPostFragment,
+	useDeletePostMutation,
 	useVoteMutation,
 } from "../generated/graphql";
 import { formatDate } from "../utils/formatDate";
@@ -19,7 +21,7 @@ const iconButtonOptions = {
 };
 
 export const PostPreview: React.FC<PostProps> = ({ post }) => {
-	const [{ fetching }, vote] = useVoteMutation();
+	const [{ fetching }, deletePost] = useDeletePostMutation();
 	const updoots = useState(0);
 
 	return (
@@ -41,6 +43,11 @@ export const PostPreview: React.FC<PostProps> = ({ post }) => {
 				<p>
 					by {post.author.username} on {formatDate(post.createdAt)}
 				</p>
+				<IconButton
+					icon={<DeleteIcon />}
+					aria-label="delete post"
+					onClick={() => deletePost({id: post.id})}
+				/>
 			</Box>
 		</Flex>
 	);

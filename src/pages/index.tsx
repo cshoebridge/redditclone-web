@@ -1,8 +1,4 @@
-import {
-	Button,
-	Stack,
-	Text
-} from "@chakra-ui/react";
+import { Button, Stack, Text } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import React, { useState } from "react";
 import { Layout } from "../components/Layout";
@@ -20,7 +16,7 @@ const Index = () => {
 	const [{ data, fetching }] = usePostsQuery({ variables: queryVars });
 
 	return (
-			<Layout>
+		<Layout>
 			<Wrapper>
 				{fetching && !data ? (
 					"Loading..."
@@ -29,19 +25,18 @@ const Index = () => {
 						<Text fontSize="4xl" fontWeight="bold">
 							Posts
 						</Text>
-						{data?.posts.posts.map((post) => (
-							<PostPreview post={post} />
-						))}
+						{data?.posts.posts.map((post) =>
+							post ? <PostPreview post={post} /> : null
+						)}
 						{data && !data.posts.allFetched ? (
 							<Button
 								width="100%"
 								onClick={() => {
 									setQueryVars((prev) => ({
 										...prev,
-										cursor:
-											data.posts.posts[
-												data.posts.posts.length - 1
-											].createdAt,
+										cursor: data.posts.posts[
+											data.posts.posts.length - 1
+										].createdAt,
 									}));
 								}}
 								isLoading={fetching}
@@ -52,7 +47,7 @@ const Index = () => {
 					</Stack>
 				)}
 			</Wrapper>
-			</Layout>
+		</Layout>
 	);
 };
 

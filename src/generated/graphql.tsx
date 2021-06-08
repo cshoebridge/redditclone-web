@@ -106,7 +106,7 @@ export type MutationUpdatePostArgs = {
 
 
 export type MutationDeletePostArgs = {
-  id: Scalars['Float'];
+  id: Scalars['Int'];
 };
 
 
@@ -226,7 +226,7 @@ export type CreatePostMutation = (
 );
 
 export type DeletePostMutationVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['Int'];
 }>;
 
 
@@ -435,7 +435,7 @@ export function useCreatePostMutation() {
   return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument);
 };
 export const DeletePostDocument = gql`
-    mutation DeletePost($id: Float!) {
+    mutation DeletePost($id: Int!) {
   deletePost(id: $id)
 }
     `;

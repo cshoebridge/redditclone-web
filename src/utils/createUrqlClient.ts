@@ -3,6 +3,7 @@ import { dedupExchange, Exchange, fetchExchange } from "urql";
 import { pipe, tap } from "wonka";
 import {
 	CreatePostMutation,
+	DeletePostMutationVariables,
 	LoginMutation,
 	LogoutMutation,
 	MeDocument,
@@ -134,6 +135,11 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
 									fi.arguments || {}
 								);
 							});
+						},
+						deletePost: (result, args, cache, info) => {
+							if((result?.deletePost as string).includes("success")) {
+								cache.invalidate({ __typename: "Post", id: (args as DeletePostMutationVariables).id})
+							}
 						},
 						vote: (result, args, cache, info) => {
 							const {
