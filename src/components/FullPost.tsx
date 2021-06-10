@@ -10,18 +10,21 @@ import {
 import { formatDate } from "../utils/formatDate";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
 import { UpdootWidget } from "./UpdootWidget";
+import { EditDeleteButtonWidget } from "./EditDeleteButtonWidget";
+import { useGetIsAuthor } from "../hooks/useGetIsAuthor";
 
 interface PostProps {
 	post: RegularPostFragment & Pick<Post, "text">;
 }
 
 export const FullPost: React.FC<PostProps> = ({ post }) => {
-	const updoots = useState(0);
+	const isAuthor = useGetIsAuthor();
 
 	return (
 		<>
             <Flex w="100%" bgColor="blackAlpha.600" textColor="white" justifyContent="center">
 				<UpdootWidget post={post} direction={"row"} />
+				{isAuthor ? <EditDeleteButtonWidget id={post.id}/>: null }
 			</Flex>
 			<Flex
 				key={`post-${post.id}-container`}
