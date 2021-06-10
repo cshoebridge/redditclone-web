@@ -56,7 +56,7 @@ const EditPost: React.FC = ({}) => {
 							);
 							setErrors(errors);
 						} else if (response.data?.updatePost?.post) {
-							router.push(`/post/${intId}`);
+							router.back();
 						}
 					}}
 				>

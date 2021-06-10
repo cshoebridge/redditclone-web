@@ -10,7 +10,7 @@ import {
 
 interface UpdootWidgetProps {
 	post: RegularPostFragment & (Pick<Post, "text"> | Pick<Post, "textSnippet">);
-    direction: "column" | "row"
+    flexDirection: "column" | "row"
 }
 
 const iconButtonOptions = {
@@ -18,13 +18,13 @@ const iconButtonOptions = {
 	mx: 0.5,
 };
 
-export const UpdootWidget: React.FC<UpdootWidgetProps> = ({ post, direction }) => {
+export const UpdootWidget: React.FC<UpdootWidgetProps> = ({ post, flexDirection }) => {
 	const [{ fetching }, vote] = useVoteMutation();
 	return (
 		<Flex
 			color="gray.600"
 			fontSize="sm"
-			flexDirection={direction}
+			flexDirection={flexDirection}
 			alignItems="center"
 			marginRight={"3.5"}
 		>

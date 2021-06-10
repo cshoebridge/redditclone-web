@@ -4,6 +4,7 @@ import {
 	Post,
 	RegularPostFragment,
 	UpdootDirection,
+	useMeQuery,
 	useVoteMutation,
 	VoteMutationVariables,
 } from "../generated/graphql";
@@ -18,23 +19,29 @@ interface PostProps {
 }
 
 export const FullPost: React.FC<PostProps> = ({ post }) => {
-	const isAuthor = useGetIsAuthor();
+	const [{ data: meData, fetching: fetchingMe }] = useMeQuery();
 
 	return (
 		<>
-            <Flex w="100%" bgColor="blackAlpha.600" textColor="white" justifyContent="center">
-				<UpdootWidget post={post} direction={"row"} />
-				{isAuthor ? <EditDeleteButtonWidget id={post.id}/>: null }
+			<Flex
+				w="100%"
+				bgColor="blackAlpha.600"
+				textColor="white"
+				justifyContent="center"
+			>
+				<UpdootWidget post={post} flexDirection={"row"} />
+				{meData?.me?.user?.id === post.author.id ? (
+					<EditDeleteButtonWidget id={post.id} />
+				) : null}
 			</Flex>
 			<Flex
 				key={`post-${post.id}-container`}
 				flexDirection="column"
 				bgColor="lightgray"
-                alignItems="left"
-                px="5%"
-                py="2%"
+				alignItems="left"
+				px="5%"
+				py="2%"
 			>
-				
 				<Box borderRadius="5" p="3" bgColor="white" mr="40%">
 					<Box>
 						<Heading fontSize="lg">

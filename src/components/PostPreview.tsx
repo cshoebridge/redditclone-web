@@ -12,6 +12,7 @@ import {
 } from "../generated/graphql";
 import { formatDate } from "../utils/formatDate";
 import { isAuthor } from "../utils/isAuthor";
+import { EditDeleteButtonWidget } from "./EditDeleteButtonWidget";
 import { UpdootWidget } from "./UpdootWidget";
 
 interface PostProps {
@@ -24,7 +25,6 @@ const iconButtonOptions = {
 };
 
 export const PostPreview: React.FC<PostProps> = ({ post }) => {
-	const [{ fetching }, deletePost] = useDeletePostMutation();
 	const [{ data: meData, fetching: fetchingMe }] = useMeQuery();
 
 	return (
@@ -35,7 +35,7 @@ export const PostPreview: React.FC<PostProps> = ({ post }) => {
 			borderWidth="1px"
 			flexDirection="row"
 		>
-			<UpdootWidget post={post} direction={"column"} />
+			<UpdootWidget post={post} flexDirection={"column"} />
 			<Box>
 				<Heading fontSize="xl">
 					<NextLink href={`post/${post.id}`}>
@@ -48,23 +48,7 @@ export const PostPreview: React.FC<PostProps> = ({ post }) => {
 				</p>
 
 				{meData?.me.user?.id === post.author.id ? (
-					<Box>
-						<IconButton
-							icon={<DeleteIcon />}
-							aria-label="delete post"
-							mt={1}
-							mr={1}
-							onClick={() => deletePost({ id: post.id })}
-						/>
-						<NextLink href={`post/edit/${post.id}`}>
-							<IconButton
-								icon={<EditIcon />}
-								aria-label="edit post"
-								mt={1}
-								ml={1}
-							/>
-						</NextLink>
-					</Box>
+					<EditDeleteButtonWidget id={post.id} />
 				) : null}
 			</Box>
 		</Flex>
