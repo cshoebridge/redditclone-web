@@ -16,10 +16,10 @@ import { toErrorMap } from "../utils/toErrorMap";
 const CreatePost: React.FC = ({}) => {
 	const router = useRouter();
 	useIsAuth();
-	
+
 	const [, createPost] = useCreatePostMutation();
 	return (
-			<Layout>
+		<Layout>
 			<Wrapper variant="small">
 				<Formik
 					initialValues={{ title: "", text: "" }}
@@ -62,7 +62,7 @@ const CreatePost: React.FC = ({}) => {
 					)}
 				</Formik>
 			</Wrapper>
-			</Layout>
+		</Layout>
 	);
 };
 

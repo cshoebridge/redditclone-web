@@ -13,12 +13,12 @@ import {
 	RegisterMutation,
 	VoteMutationVariables,
 } from "../generated/graphql";
-import { typeSafeUpdateQuery } from "./typeSafeUpdateQuery";
 import Router from "next/router";
 import { cursorPagination } from "./cursorPagination";
 import gql from "graphql-tag";
 import { directionToNumber } from "./directionToNumber";
 import { isServer } from "./isServer";
+import { typeSafeUpdateQuery } from "./typeSafeUpdateQuery";
 
 // all errors thrown to urql client get pumped into here
 const errorExchange: Exchange = ({ forward }) => (ops$) => {
@@ -35,7 +35,7 @@ const errorExchange: Exchange = ({ forward }) => (ops$) => {
 export const createUrqlClient = (ssrExchange: any, ctx: any) => {
 	let cookie = ''
 	if (isServer()) {
-		cookie = ctx.req.headers.cookie
+		cookie = ctx?.req?.headers?.cookie
 	}
 	return {
 		url: "http://localhost:5000/graphql",

@@ -1,5 +1,13 @@
 mutation updatePost($id: Float!, $title: String!, $text: String!){
   updatePost(id:$id, input:{title:$title, text:$text}) {
-    ...RegularPost
+    errors {
+      message
+    }
+    post {
+      id
+      title
+      text
+      textSnippet
+    }
   }
 }

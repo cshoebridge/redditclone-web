@@ -83,7 +83,7 @@ export type UserFieldError = {
 export type Mutation = {
   __typename?: 'Mutation';
   createPost: PostResponse;
-  updatePost?: Maybe<Post>;
+  updatePost?: Maybe<PostResponse>;
   deletePost: Scalars['String'];
   register: UserResponse;
   login: UserResponse;
@@ -310,8 +310,14 @@ export type UpdatePostMutationVariables = Exact<{
 export type UpdatePostMutation = (
   { __typename?: 'Mutation' }
   & { updatePost?: Maybe<(
-    { __typename?: 'Post' }
-    & RegularPostFragment
+    { __typename?: 'PostResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'PostFieldError' }
+      & Pick<PostFieldError, 'message'>
+    )>>, post?: Maybe<(
+      { __typename?: 'Post' }
+      & Pick<Post, 'id' | 'title' | 'text' | 'textSnippet'>
+    )> }
   )> }
 );
 
@@ -504,10 +510,18 @@ export function useRegisterMutation() {
 export const UpdatePostDocument = gql`
     mutation updatePost($id: Float!, $title: String!, $text: String!) {
   updatePost(id: $id, input: {title: $title, text: $text}) {
-    ...RegularPost
+    errors {
+      message
+    }
+    post {
+      id
+      title
+      text
+      textSnippet
+    }
   }
 }
-    ${RegularPostFragmentDoc}`;
+    `;
 
 export function useUpdatePostMutation() {
   return Urql.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument);

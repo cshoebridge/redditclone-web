@@ -1,23 +1,13 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
-import { useRouter } from "next/router";
 import React from "react";
 import { FullPost } from "../../components/FullPost";
 import { Layout } from "../../components/Layout";
-import { PostPreview } from "../../components/PostPreview";
-import Wrapper from "../../components/Wrapper";
-import { usePostQuery } from "../../generated/graphql";
+import { useGetPostFromUrl } from "../../hooks/useGetPostFromUrl";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 
 const Post = () => {
-	const router = useRouter();
-	const postId = router.query.postid;
-	const intId = typeof postId === "string" ? parseInt(postId) : -1;
-
-	const [{ data, fetching }] = usePostQuery({
-		pause: intId === -1,
-		variables: { id: intId },
-	});
+	const [{data, fetching}] = useGetPostFromUrl();
 
 	if (fetching) {
 		return <h1>Loading</h1>;

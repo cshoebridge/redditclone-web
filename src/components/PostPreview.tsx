@@ -1,14 +1,17 @@
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { Box, Flex, Heading, IconButton, Link, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import {
 	Post,
 	RegularPostFragment,
 	useDeletePostMutation,
+	useMeQuery,
 	useVoteMutation,
 } from "../generated/graphql";
 import { formatDate } from "../utils/formatDate";
+import { isAuthor } from "../utils/isAuthor";
 import { UpdootWidget } from "./UpdootWidget";
 
 interface PostProps {
@@ -22,7 +25,7 @@ const iconButtonOptions = {
 
 export const PostPreview: React.FC<PostProps> = ({ post }) => {
 	const [{ fetching }, deletePost] = useDeletePostMutation();
-	const updoots = useState(0);
+	const [{ data: meData, fetching: fetchingMe }] = useMeQuery();
 
 	return (
 		<Flex
@@ -43,11 +46,26 @@ export const PostPreview: React.FC<PostProps> = ({ post }) => {
 				<p>
 					by {post.author.username} on {formatDate(post.createdAt)}
 				</p>
-				<IconButton
-					icon={<DeleteIcon />}
-					aria-label="delete post"
-					onClick={() => deletePost({id: post.id})}
-				/>
+
+				{meData?.me.user?.id === post.author.id ? (
+					<Box>
+						<IconButton
+							icon={<DeleteIcon />}
+							aria-label="delete post"
+							mt={1}
+							mr={1}
+							onClick={() => deletePost({ id: post.id })}
+						/>
+						<NextLink href={`post/edit/${post.id}`}>
+							<IconButton
+								icon={<EditIcon />}
+								aria-label="edit post"
+								mt={1}
+								ml={1}
+							/>
+						</NextLink>
+					</Box>
+				) : null}
 			</Box>
 		</Flex>
 	);
