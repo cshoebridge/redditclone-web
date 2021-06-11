@@ -19,7 +19,7 @@ export const EditDeleteButtonWidget: React.FC<EditDeleteButtonWidgetProps> = ({i
 					mr={1}
 					onClick={() => deletePost({ id })}
 				/>
-				<NextLink href={`post/edit/${id}`}>
+				<NextLink href={`/post/edit/${id}`}>
 					<IconButton
 						icon={<EditIcon />}
 						aria-label="edit post"

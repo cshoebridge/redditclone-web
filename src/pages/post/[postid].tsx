@@ -18,6 +18,8 @@ const Post = () => {
 		return <h1>Some sort of 404 screen</h1>;
 	}
 
+	console.log(data?.post)
+
 	return (
 		<Layout>
 			<Flex mx="15%" flexDirection="column">
